@@ -61,9 +61,6 @@ class BaseChance:
     def __floordiv__(self, other):
         return VariadicChance(operator.floordiv, self, other)
 
-    def __is_not__(self, other):
-        return VariadicChance(operator.is_not, self, other)
-
 
 class VariadicChance(BaseChance):
 
