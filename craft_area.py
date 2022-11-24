@@ -183,6 +183,13 @@ commando_unit_type = battle_entity(
 )
 
 
+unreliable_bursty_unit_type = battle_entity(
+    "unreliable_burst_unit",
+    attacks=hit90(150*Damage.basic) + hit20(1000*Damage.basic),
+    defends=hit95(100*Damage.basic),
+)
+
+
 defender_unit_type = battle_entity(
     "defender_unit",
     attacks=hit50(50*Damage.basic),
