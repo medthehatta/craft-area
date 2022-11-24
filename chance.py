@@ -61,6 +61,10 @@ class VariadicChance(BaseChance):
         self.args = args
         self.rng = rng
 
+    def __repr__(self):
+        funcname = self.func.__name__
+        return f"{funcname}(*{self.args})"
+
     def resolve(self, rng=None):
         rng = rng or self.rng or random.Random()
         return self.func(*[_resolve(a, rng) for a in self.args])
@@ -73,6 +77,10 @@ class SeqChance(BaseChance):
         self.seq = seq
         self.rng = rng
 
+    def __repr__(self):
+        funcname = self.func.__name__
+        return f"{funcname}({self.seq})"
+
     def resolve(self, rng=None):
         rng = rng or self.rng or random.Random()
         return self.func([a.resolve(rng) for a in self.seq])
@@ -84,6 +92,10 @@ class DictChance(BaseChance):
         self.func = func
         self.dic = dic
         self.rng = rng
+
+    def __repr__(self):
+        funcname = self.func.__name__
+        return f"{funcname}({self.dic})"
 
     def resolve(self, rng=None):
         rng = rng or self.rng or random.Random()
