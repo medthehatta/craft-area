@@ -90,6 +90,19 @@ def select_at_least_one_of_each(items, num_min, num_max=None, rng=None):
     return selections
 
 
+def extract_pct(pct, items, rng=None):
+    max_num_float = pct/100 * len(items)
+    # If we have a moderately large fraction of 1, just clamp the max to 1.
+    # If we have a very small fraction, it will be truncated to 0.
+    if 0.1 < max_num_float < 1:
+        max_num = 1
+    else:
+        max_num = int(max_num_float)
+
+    num = rng.randint(0, max_num)
+    return rng.sample(items, num)
+
+
 def random_fleet(num_min, num_max=None, has_types=None, rng=None):
     has_types = has_types or [
         entity for entity in _battle_entities.values()
