@@ -91,15 +91,28 @@ def select_at_least_one_of_each(items, num_min, num_max=None, rng=None):
 
 
 def extract_pct(pct, items, rng=None):
+    rng = rng or random.Random()
     max_num_float = pct/100 * len(items)
+
     # If we have a moderately large fraction of 1, just clamp the max to 1.
     # If we have a very small fraction, it will be truncated to 0.
     if 0.1 < max_num_float < 1:
         max_num = 1
     else:
         max_num = int(max_num_float)
-
     num = rng.randint(0, max_num)
+
+    return rng.sample(items, num)
+
+
+def extract_pct_at_least_one(pct, items, rng=None):
+    rng = rng or random.Random()
+    max_num_float = pct/100 * len(items)
+
+    # Always get at least 1
+    max_num = max(int(max_num_float), 1)
+    num = rng.randint(1, max_num)
+
     return rng.sample(items, num)
 
 
@@ -154,8 +167,39 @@ def produce_defense(fleet_entries, rng=None):
 basic_unit_type = battle_entity(
     "basic_unit",
     initiative=50,
-    attacks=hit60(100*Damage.basic),
+    attacks=hit60(200*Damage.basic),
     defends=hit95(100*Damage.basic),
+)
+
+
+glass_cannon_unit_type = battle_entity(
+    "glass_cannon_unit",
+    initiative=10,
+    attacks=hit70(1000*Damage.basic),
+    defends=hit50(50*Damage.basic),
+)
+
+
+commando_unit_type = battle_entity(
+    "commando_unit",
+    initiative=70,
+    attacks=hit90(1000*Damage.basic),
+    defends=hit50(50*Damage.basic),
+)
+
+
+defender_unit_type = battle_entity(
+    "defender_unit",
+    initiative=80,
+    attacks=hit50(50*Damage.basic),
+    defends=hit95(500*Damage.basic),
+)
+
+
+wall_unit_type = battle_entity(
+    "wall_unit",
+    initiative=90,
+    defends=hit99(600*Damage.basic),
 )
 
 
