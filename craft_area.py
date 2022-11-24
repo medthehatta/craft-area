@@ -39,45 +39,34 @@ hit99 = partial(hit, 99)
 hit100 = definitely
 
 
-def unit_type(
+_battle_entities = {}
+
+
+def battle_entity(
     name,
     initiative,
     attacks=definitely(Damage.none),
     defends=definitely(Damage.none),
     one_time=False,
+    can_initiate=True,
 ):
-    return {
+    entity = {
         "name": name,
         "initiative": initiative,
         "attacks": attacks,
         "defends": defends,
         "one_time": one_time,
+        "can_initiate": can_initiate,
     }
-
-
-basic_unit_type = unit_type(
-    "basic",
-    initiative=50,
-    attacks=hit60(100*Damage.basic),
-    defends=hit95(100*Damage.basic),
-    one_time=False,
-)
-
-
-exploding_unit_type = unit_type(
-    "exploding",
-    initiative=20,
-    attacks=hit80(500*Damage.explosive),
-    defends=definitely(Damage.none),
-    one_time=True,
-)
-
-
-all_types = [basic_unit_type, exploding_unit_type]
+    _battle_entities[name] = entity
+    return entity
 
 
 def random_fleet(num_min, num_max=None, has_types=None, rng=None):
-    has_types = has_types or all_types
+    has_types = has_types or [
+        entity for entity in _battle_entities.values()
+        if entity["can_initiate"]
+    ]
     num_max = num_max or num_min
     rng = rng or random.Random()
     if num_min < len(has_types):
@@ -102,3 +91,44 @@ def random_fleet(num_min, num_max=None, has_types=None, rng=None):
     )
 
     return {"size": num, "types": type_names, "fleet": selections}
+
+
+def produce_damage(fleet_entries, rng=None):
+    rng = rng or random.Random()
+    attacks = {
+        entity_name: [
+            _battle_entities[entity_name]["attacks"].resolve(rng)
+            for _ in range(num)
+        ]
+        for (entity_name, num) in fleet_entries.items()
+    }
+    return {
+        "damage": FormalVector.sum(FormalVector.sum(a) for a in attacks.values()),
+        "attacks": attacks,
+    }
+
+
+basic_unit_type = battle_entity(
+    "basic_unit",
+    initiative=50,
+    attacks=hit60(100*Damage.basic),
+    defends=hit95(100*Damage.basic),
+)
+
+
+exploding_unit_type = battle_entity(
+    "exploding_unit",
+    initiative=20,
+    attacks=hit80(500*Damage.explosive),
+    one_time=True,
+)
+
+
+module_structure = battle_entity(
+    "module_structure",
+    initiative=99,
+    defends=hit99(1000*Damage.basic),
+    can_initiate=False,
+)
+
+
