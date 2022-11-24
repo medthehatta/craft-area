@@ -67,16 +67,12 @@ def battle_entity(
     return entity
 
 
-def random_fleet(num_min, num_max=None, has_types=None, rng=None):
-    has_types = has_types or [
-        entity for entity in _battle_entities.values()
-        if entity["can_initiate"]
-    ]
+def select_at_least_one_of_each(items, num_min, num_max=None, rng=None):
     num_max = num_max or num_min
     rng = rng or random.Random()
-    if num_min < len(has_types):
+    if num_min < len(items):
         raise ValueError(
-            "num_min cannot be smaller than the length of has_types"
+            "num_min cannot be smaller than the number of items"
         )
 
     num = (
@@ -84,18 +80,28 @@ def random_fleet(num_min, num_max=None, has_types=None, rng=None):
         rng.randint(num_min, num_max)
     )
 
-    type_names = list(set(t["name"] for t in has_types))
-
-    # First we will take one of each type, so no need to actually select those
+    # First we will take one of each item, so no need to actually select those
     # algorithmically
-    num_remaining = num - len(has_types)
+    num_remaining = num - len(items)
 
     # Now randomly select num_remaining from our options
-    selections = dict(
-        Counter(type_names + rng.choices(type_names, k=num_remaining))
-    )
+    selections = Counter(items + rng.choices(items, k=num_remaining))
 
-    return {"size": num, "types": type_names, "fleet": selections}
+    return selections
+
+
+def random_fleet(num_min, num_max=None, has_types=None, rng=None):
+    has_types = has_types or [
+        entity for entity in _battle_entities.values()
+        if entity["can_initiate"]
+    ]
+    possibilities = [t["name"] for t in has_types]
+    return select_at_least_one_of_each(
+        possibilities,
+        num_min=num_min,
+        num_max=num_max,
+        rng=rng,
+    )
 
 
 def produce_damage(fleet_entries, rng=None):
