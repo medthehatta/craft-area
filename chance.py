@@ -1,5 +1,6 @@
 import operator
 import random
+from functools import wraps
 
 
 def _resolve(obj, rng):
@@ -183,6 +184,13 @@ class PercentChanceToOccur(BaseChance):
 #
 # Helper aliases
 #
+
+
+def lift(func, rng=None):
+    @wraps(func)
+    def _func(*args):
+        return VariadicChance(func, *args, rng=rng)
+    return _func
 
 
 definitely = Definitely
