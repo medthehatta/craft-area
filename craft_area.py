@@ -11,11 +11,16 @@ from chance import weighted
 from chance import percent_left
 
 
+class DamageVector(FormalVector):
+
+    _ZERO = "Damage.zero"
+
+
 class Damage:
 
-    none = FormalVector.zero()
-    basic = FormalVector.named("basic")
-    explosive = FormalVector.named("explosive")
+    none = DamageVector.zero()
+    basic = DamageVector.named("Damage.basic")
+    explosive = DamageVector.named("Damage.explosive")
 
 
 def hit(pct, type_):
@@ -103,7 +108,7 @@ def produce_damage(fleet_entries, rng=None):
         for (entity_name, num) in fleet_entries.items()
     }
     return {
-        "damage": FormalVector.sum(FormalVector.sum(a) for a in attacks.values()),
+        "damage": DamageVector.sum(DamageVector.sum(a) for a in attacks.values()),
         "attacks": attacks,
     }
 
