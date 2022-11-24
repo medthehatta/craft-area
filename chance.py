@@ -9,12 +9,23 @@ def _resolve(obj, rng):
         return obj
 
 
+def _format_pct(fraction):
+    pct = 100 * fraction
+    if pct >= 100:
+        return f"{pct:.3n}%"
+    elif pct < 10:
+        return f"{pct:.1n}%"
+    else:
+        return f"{pct:.2n}%"
+
+
 def _weighted_repr(outcomes, weights=None):
     if weights is None:
         weights = [1]*len(outcomes)
     total = sum(weights)
     display = " | ".join(
-            f"{it} ({100*w/total:.2n}%)" for (it, w) in zip(outcomes, weights)
+            f"{it} ({_format_pct(w/total)}))"
+            for (it, w) in zip(outcomes, weights)
     )
     return f"<Chances: {display}>"
 
