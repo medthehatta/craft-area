@@ -171,7 +171,7 @@ class PercentChanceToOccur(BaseChance):
 
     def resolve(self, rng=None):
         rng = rng or self.rng or random.Random()
-        chance = percent_chance/100
+        chance = self.percent_chance/100
         if rng.random() <= chance:
             outcome = self.yes
         else:
