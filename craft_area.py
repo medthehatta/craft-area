@@ -49,7 +49,6 @@ _battle_entities = {}
 
 def battle_entity(
     name,
-    initiative,
     attacks=definitely(Damage.none),
     defends=definitely(Damage.none),
     one_time=False,
@@ -57,7 +56,6 @@ def battle_entity(
 ):
     entity = {
         "name": name,
-        "initiative": initiative,
         "attacks": attacks,
         "defends": defends,
         "one_time": one_time,
@@ -166,7 +164,6 @@ def produce_defense(fleet_entries, rng=None):
 
 basic_unit_type = battle_entity(
     "basic_unit",
-    initiative=50,
     attacks=hit60(200*Damage.basic),
     defends=hit95(100*Damage.basic),
 )
@@ -174,7 +171,6 @@ basic_unit_type = battle_entity(
 
 glass_cannon_unit_type = battle_entity(
     "glass_cannon_unit",
-    initiative=10,
     attacks=hit70(1000*Damage.basic),
     defends=hit50(50*Damage.basic),
 )
@@ -182,7 +178,6 @@ glass_cannon_unit_type = battle_entity(
 
 commando_unit_type = battle_entity(
     "commando_unit",
-    initiative=70,
     attacks=hit90(1000*Damage.basic),
     defends=hit50(50*Damage.basic),
 )
@@ -190,7 +185,6 @@ commando_unit_type = battle_entity(
 
 defender_unit_type = battle_entity(
     "defender_unit",
-    initiative=80,
     attacks=hit50(50*Damage.basic),
     defends=hit95(500*Damage.basic),
 )
@@ -198,14 +192,12 @@ defender_unit_type = battle_entity(
 
 wall_unit_type = battle_entity(
     "wall_unit",
-    initiative=90,
     defends=hit99(600*Damage.basic),
 )
 
 
 exploding_unit_type = battle_entity(
     "exploding_unit",
-    initiative=20,
     attacks=hit80(500*Damage.explosive),
     one_time=True,
 )
@@ -213,7 +205,6 @@ exploding_unit_type = battle_entity(
 
 module_structure = battle_entity(
     "module_structure",
-    initiative=99,
     defends=hit99(1000*Damage.basic),
     can_initiate=False,
 )
