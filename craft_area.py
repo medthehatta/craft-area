@@ -108,8 +108,27 @@ def produce_damage(fleet_entries, rng=None):
         for (entity_name, num) in fleet_entries.items()
     }
     return {
-        "damage": DamageVector.sum(DamageVector.sum(a) for a in attacks.values()),
+        "damage": DamageVector.sum(
+            DamageVector.sum(a) for a in attacks.values()
+        ),
         "attacks": attacks,
+    }
+
+
+def produce_defense(fleet_entries, rng=None):
+    rng = rng or random.Random()
+    defenses = {
+        entity_name: [
+            _battle_entities[entity_name]["defends"].resolve(rng)
+            for _ in range(num)
+        ]
+        for (entity_name, num) in fleet_entries.items()
+    }
+    return {
+        "damage": DamageVector.sum(
+            DamageVector.sum(a) for a in defenses.values()
+        ),
+        "defenses": defenses,
     }
 
 
