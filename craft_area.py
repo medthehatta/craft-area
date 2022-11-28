@@ -44,7 +44,7 @@ hit99 = partial(hit, 99)
 hit100 = definitely
 
 
-_battle_entities = {}
+battle_entities = {}
 
 
 def battle_entity(
@@ -61,7 +61,7 @@ def battle_entity(
         "one_time": one_time,
         "can_initiate": can_initiate,
     }
-    _battle_entities[name] = entity
+    battle_entities[name] = entity
     return entity
 
 
@@ -116,7 +116,7 @@ def extract_pct_at_least_one(pct, items, rng=None):
 
 def random_fleet(num_min, num_max=None, has_types=None, rng=None):
     has_types = has_types or [
-        entity for entity in _battle_entities.values()
+        entity for entity in battle_entities.values()
         if entity["can_initiate"]
     ]
     possibilities = [t["name"] for t in has_types]
@@ -132,7 +132,7 @@ def produce_damage(fleet_entries, rng=None):
     rng = rng or random.Random()
     attacks = {
         entity_name: [
-            _battle_entities[entity_name]["attacks"].resolve(rng)
+            battle_entities[entity_name]["attacks"].resolve(rng)
             for _ in range(num)
         ]
         for (entity_name, num) in fleet_entries.items()
@@ -149,13 +149,13 @@ def produce_defense(fleet_entries, rng=None):
     rng = rng or random.Random()
     defenses = {
         entity_name: [
-            _battle_entities[entity_name]["defends"].resolve(rng)
+            battle_entities[entity_name]["defends"].resolve(rng)
             for _ in range(num)
         ]
         for (entity_name, num) in fleet_entries.items()
     }
     return {
-        "damage": DamageVector.sum(
+        "mitigation": DamageVector.sum(
             DamageVector.sum(a) for a in defenses.values()
         ),
         "defenses": defenses,
